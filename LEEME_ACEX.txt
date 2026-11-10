@@ -1,0 +1,14 @@
+Proyecto: EstadiasAccesibilidad / CECAPI
+Rama: integracion/combinado
+Último commit: e4a7bcf
+Generado: 29 de octubre de 2026
+
+Contenido:
+- Código fuente completo de la app Android (sin .git, app/build, .gradle ni .kotlin).
+- Recursos, pruebas JUnit, documentación y backend.
+- Reglas nuevas de celular, silla, pantalla y color.
+- Diagnóstico y validación en docs/decisiones/0010-deteccion-pantallas.md.
+- APK de depuración en dist/EstadiasAccesibilidad.apk con su SHA256SUMS.txt.
+
+Para compilar desde cero:
+JAVA_HOME=<jdk17> bash ./gradlew :app:assembleDebug

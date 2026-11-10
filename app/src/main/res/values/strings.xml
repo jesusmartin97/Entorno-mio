@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">CECAPI</string>
+    <string name="accessibility_service_description">CECAPI atiende tus gestos (deslizar, dobles toques) y lee en voz alta lo que hay en la pantalla para que puedas usarla sin ver. Para describir imágenes toma una captura temporal: si hay internet la envía a Gemini y, si no, la analiza en el teléfono.</string>
+    <string name="accesibilidad_talkback_aviso">TalkBack está activado. Puede chocar con los gestos de CECAPI. Te recomendamos desactivarlo.</string>
+    <string name="accesibilidad_talkback_explicacion">Mientras TalkBack esté encendido, la exploración táctil y los gestos de CECAPI pueden responder de otra forma.</string>
+    <string name="accesibilidad_talkback_abrir_ajustes">Abrir ajustes de TalkBack</string>
+    <string name="accesibilidad_talkback_no_puede_apagar">CECAPI no puede apagar TalkBack por sí sola. Desactívalo tú en esa pantalla.</string>
+    <string name="accesibilidad_talkback_sin_ajustes">No se pudieron abrir los ajustes de accesibilidad en este teléfono. Ábrelos desde Ajustes del sistema.</string>
+</resources>

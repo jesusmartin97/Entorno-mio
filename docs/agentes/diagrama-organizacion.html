@@ -1,0 +1,427 @@
+<title>Mapa de trabajo CECAPI</title>
+<style>
+  :root {
+    --bg: #0b0b12;
+    --surface: #14141f;
+    --surface-2: #1a1a26;
+    --border: #2a2a38;
+    --text: #f5f6fa;
+    --text-muted: #9aa0ae;
+    --text-label: #7e8494;
+    --accent: #38bdf8;
+    --accent-dim: #38bdf82a;
+    --team-ia: #60a5fa;
+    --team-camara: #4ade80;
+    --team-documentos: #f6c453;
+    --team-actividades: #b794f6;
+    --team-entorno: #fb923c;
+    --agentes: #f472b6;
+    --constructor: #38bdf8;
+    --warn: #f59e0b;
+    color-scheme: dark;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: "Manrope", system-ui, sans-serif;
+    padding: clamp(20px, 4vw, 56px) 16px 64px;
+    max-width: 1040px;
+    margin: 0 auto;
+    line-height: 1.5;
+  }
+
+  h1, h2, h3 { font-family: "Manrope", system-ui, sans-serif; text-wrap: balance; margin: 0; }
+  code, .mono { font-family: "JetBrains Mono", ui-monospace, monospace; }
+
+  header.page {
+    margin-bottom: 40px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid var(--border);
+  }
+  .eyebrow {
+    font-size: 12px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    font-weight: 700;
+  }
+  h1 { font-size: clamp(28px, 4vw, 38px); margin-top: 8px; }
+  .subtitle { color: var(--text-muted); font-size: 16px; margin-top: 10px; max-width: 62ch; }
+  .meta {
+    margin-top: 16px;
+    display: flex;
+    gap: 8px 16px;
+    flex-wrap: wrap;
+    font-size: 13px;
+    color: var(--text-label);
+  }
+  .meta code { color: var(--text-muted); background: var(--surface-2); padding: 2px 7px; border-radius: 5px; }
+
+  section { margin-top: 48px; }
+  section > h2 {
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-label);
+    font-weight: 700;
+    margin-bottom: 6px;
+  }
+  section > .claim { font-size: 21px; font-weight: 600; max-width: 48ch; margin-bottom: 20px; }
+
+  figure {
+    margin: 0;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 18px 18px 16px;
+  }
+  .scroll { overflow-x: auto; }
+  svg { display: block; margin: 0 auto; max-width: 100%; height: auto; }
+  figcaption {
+    margin-top: 14px;
+    padding-top: 14px;
+    border-top: 1px solid var(--border);
+    font-size: 13.5px;
+    color: var(--text-muted);
+  }
+  figcaption b { color: var(--text); font-weight: 600; }
+
+  .legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 18px;
+    margin-top: 14px;
+    font-size: 12.5px;
+    color: var(--text-muted);
+  }
+  .legend span { display: inline-flex; align-items: center; gap: 6px; }
+  .swatch { width: 10px; height: 10px; border-radius: 3px; display: inline-block; flex: none; }
+
+  .callout {
+    margin-top: 16px;
+    padding: 12px 14px;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--accent);
+    border-radius: 8px;
+    font-size: 13.5px;
+    color: var(--text-muted);
+  }
+  .callout b { color: var(--text); }
+
+  footer.page {
+    margin-top: 56px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border);
+    font-size: 12.5px;
+    color: var(--text-label);
+  }
+</style>
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap">
+
+<header class="page">
+  <div class="eyebrow">CECAPI · interfaz para personas invidentes</div>
+  <h1>Mapa de trabajo</h1>
+  <p class="subtitle">
+    Dos vistas del mismo proyecto: cómo viaja una frase hablada dentro de la aplicación, y quién construye
+    cada parte. Sirve para que cada agente sepa qué es suyo y qué depende de otro.
+  </p>
+  <div class="meta">
+    <span>Rama <code>integracion/actividades</code></span>
+    <span>Commit <code>f5e7fe8</code></span>
+    <span>29 sep 2026</span>
+  </div>
+</header>
+
+<section aria-labelledby="flow-h">
+  <h2 id="flow-h">Mecanismo</h2>
+  <p class="claim">Cómo viaja una frase, desde que el micrófono la oye hasta que algo responde</p>
+
+  <figure class="scroll">
+    <svg viewBox="0 0 1160 560" role="img"
+         aria-label="Diagrama de flujo: una frase reconocida pasa primero por handleControl (silencio, para), luego por los interceptores críticos que siempre funcionan aunque una pantalla esté capturando texto sin filtrar, luego, si esa pantalla no está capturando texto sin filtrar, por los interceptores normales (comandos globales y de ayuda), y si nada la reclama llega a la pantalla activa, que revisa su propia lista de comandos y, si no la entiende, la pasa a la inteligencia artificial solo si está encendida.">
+      <defs>
+        <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+          <path d="M0,0 L10,5 L0,10 z" fill="currentColor" />
+        </marker>
+        <marker id="arrowAccent" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+          <path d="M0,0 L10,5 L0,10 z" fill="#38bdf8" />
+        </marker>
+      </defs>
+
+      <!-- swimlane baseline -->
+      <line x1="40" y1="80" x2="1120" y2="80" stroke="currentColor" stroke-opacity="0.15" stroke-width="1" />
+
+      <!-- 1. input -->
+      <g transform="translate(40,40)">
+        <rect width="150" height="80" rx="10" fill="none" stroke="currentColor" stroke-opacity="0.5" />
+        <text x="75" y="30" text-anchor="middle" font-size="12.5" font-weight="700" fill="currentColor">Frase</text>
+        <text x="75" y="46" text-anchor="middle" font-size="12.5" font-weight="700" fill="currentColor">reconocida</text>
+        <text x="75" y="65" text-anchor="middle" font-size="10.5" class="mono" fill="currentColor" fill-opacity="0.55">SpeechRecognizer</text>
+      </g>
+      <line x1="190" y1="80" x2="228" y2="80" stroke="currentColor" marker-end="url(#arrow)" />
+
+      <!-- 2. handleControl -->
+      <g transform="translate(230,40)">
+        <rect width="170" height="80" rx="10" fill="#38bdf81a" stroke="#38bdf8" />
+        <text x="85" y="28" text-anchor="middle" font-size="12.5" font-weight="700" fill="currentColor">handleControl()</text>
+        <text x="85" y="46" text-anchor="middle" font-size="10.5" fill="currentColor" fill-opacity="0.75">frase completa:</text>
+        <text x="85" y="62" text-anchor="middle" font-size="10.5" fill="currentColor" fill-opacity="0.75">"silencio" / "para"</text>
+      </g>
+      <line x1="315" y1="120" x2="315" y2="175" stroke="currentColor" stroke-opacity="0.6" marker-end="url(#arrow)" />
+      <text x="322" y="150" font-size="10" fill="currentColor" fill-opacity="0.6">si coincide</text>
+      <g transform="translate(230,178)">
+        <rect width="170" height="46" rx="8" fill="none" stroke="currentColor" stroke-opacity="0.35" stroke-dasharray="3 3" />
+        <text x="85" y="20" text-anchor="middle" font-size="10.5" fill="currentColor" fill-opacity="0.7">mute() /</text>
+        <text x="85" y="34" text-anchor="middle" font-size="10.5" fill="currentColor" fill-opacity="0.7">stopAssistant()</text>
+      </g>
+
+      <line x1="400" y1="80" x2="438" y2="80" stroke="currentColor" marker-end="url(#arrow)" />
+
+      <!-- 3. critical interceptors -->
+      <g transform="translate(440,30)">
+        <rect width="190" height="100" rx="10" fill="#f472b61a" stroke="#f472b6" />
+        <text x="95" y="24" text-anchor="middle" font-size="12.5" font-weight="700" fill="currentColor">criticalInterceptors</text>
+        <text x="95" y="42" text-anchor="middle" font-size="10" fill="currentColor" fill-opacity="0.75">DisplayControl: "pantalla</text>
+        <text x="95" y="55" text-anchor="middle" font-size="10" fill="currentColor" fill-opacity="0.75">normal" / "brillo normal"</text>
+        <text x="95" y="75" text-anchor="middle" font-size="9.5" fill="#f472b6" font-weight="600">corre aunque rawInput=true</text>
+        <text x="95" y="90" text-anchor="middle" font-size="9" class="mono" fill="currentColor" fill-opacity="0.5">añadido esta sesión</text>
+      </g>
+
+      <line x1="630" y1="80" x2="668" y2="80" stroke="currentColor" marker-end="url(#arrow)" />
+
+      <!-- 4. rawInput decision -->
+      <g transform="translate(670,15)">
+        <polygon points="65,0 130,55 65,110 0,55" fill="var(--surface-2)" stroke="currentColor" stroke-opacity="0.5" />
+        <text x="65" y="48" text-anchor="middle" font-size="11" font-weight="700" fill="currentColor">rawInput</text>
+        <text x="65" y="63" text-anchor="middle" font-size="11" font-weight="700" fill="currentColor">= true ?</text>
+      </g>
+      <text x="700" y="10" font-size="10" fill="currentColor" fill-opacity="0.6">login · registro · llenar un documento</text>
+
+      <line x1="800" y1="70" x2="838" y2="70" stroke="currentColor" marker-end="url(#arrow)" />
+      <text x="805" y="60" font-size="10" fill="currentColor" fill-opacity="0.6">no</text>
+
+      <!-- 5. speechInterceptors -->
+      <g transform="translate(840,15)">
+        <rect width="210" height="120" rx="10" fill="#38bdf80f" stroke="currentColor" stroke-opacity="0.5" />
+        <text x="105" y="22" text-anchor="middle" font-size="12.5" font-weight="700" fill="currentColor">speechInterceptors</text>
+        <line x1="14" y1="34" x2="196" y2="34" stroke="currentColor" stroke-opacity="0.2" />
+        <text x="105" y="52" text-anchor="middle" font-size="10" class="mono" fill="currentColor" fill-opacity="0.75">GlobalVoiceCommands</text>
+        <text x="105" y="66" text-anchor="middle" font-size="9.5" fill="currentColor" fill-opacity="0.55">estado · volumen · notif.</text>
+        <text x="105" y="86" text-anchor="middle" font-size="10" class="mono" fill="currentColor" fill-opacity="0.75">AssistCommands</text>
+        <text x="105" y="100" text-anchor="middle" font-size="9.5" fill="currentColor" fill-opacity="0.55">tutorial · dónde estoy · perfil</text>
+      </g>
+
+      <line x1="675" y1="115" x2="675" y2="175" stroke="currentColor" stroke-opacity="0.6" marker-end="url(#arrow)" />
+      <text x="682" y="150" font-size="10" fill="currentColor" fill-opacity="0.6">sí</text>
+
+      <line x1="945" y1="135" x2="945" y2="175" stroke="currentColor" stroke-opacity="0.4" marker-end="url(#arrow)" />
+      <text x="952" y="160" font-size="10" fill="currentColor" fill-opacity="0.6">nadie la reclamó</text>
+
+      <!-- 6. active screen -->
+      <g transform="translate(560,178)">
+        <rect width="440" height="150" rx="12" fill="var(--surface-2)" stroke="currentColor" stroke-opacity="0.5" />
+        <text x="220" y="26" text-anchor="middle" font-size="13" font-weight="700" fill="currentColor">Pantalla activa · onSpeech()</text>
+        <text x="220" y="44" text-anchor="middle" font-size="9.5" class="mono" fill="currentColor" fill-opacity="0.55">HomeVM · DashboardVM · ChatsVM · LearningVM ·</text>
+        <text x="220" y="57" text-anchor="middle" font-size="9.5" class="mono" fill="currentColor" fill-opacity="0.55">RequestsVM · DocumentReaderVM · EnvironmentVM …</text>
+
+        <rect x="18" y="72" width="404" height="30" rx="6" fill="none" stroke="currentColor" stroke-opacity="0.35" />
+        <text x="220" y="91" text-anchor="middle" font-size="10.5" fill="currentColor" fill-opacity="0.8">1 · CommandCatalog · sus propios comandos</text>
+
+        <line x1="220" y1="102" x2="220" y2="116" stroke="currentColor" stroke-opacity="0.4" marker-end="url(#arrow)" />
+        <text x="230" y="112" font-size="9" fill="currentColor" fill-opacity="0.55">no entendida</text>
+
+        <rect x="18" y="118" width="404" height="26" rx="6" fill="#60a5fa1a" stroke="#60a5fa" />
+        <text x="220" y="135" text-anchor="middle" font-size="10" fill="currentColor">2 · IntentFallback.resolver — solo si está encendido</text>
+      </g>
+
+      <line x1="890" y1="328" x2="890" y2="380" stroke="currentColor" stroke-opacity="0.5" marker-end="url(#arrow)" />
+      <g transform="translate(700,382)">
+        <rect width="380" height="60" rx="10" fill="#60a5fa14" stroke="#60a5fa" stroke-dasharray="3 3" />
+        <text x="190" y="24" text-anchor="middle" font-size="11" font-weight="600" fill="currentColor">ProxyAiAssistantApi.ask()</text>
+        <text x="190" y="42" text-anchor="middle" font-size="9.5" fill="currentColor" fill-opacity="0.65">apagado por defecto · no permitido con menores hoy</text>
+      </g>
+
+      <line x1="780" y1="328" x2="500" y2="400" stroke="currentColor" stroke-opacity="0.35" marker-end="url(#arrow)" />
+      <g transform="translate(320,382)">
+        <rect width="170" height="60" rx="10" fill="none" stroke="currentColor" stroke-opacity="0.35" stroke-dasharray="3 3" />
+        <text x="85" y="26" text-anchor="middle" font-size="10.5" fill="currentColor" fill-opacity="0.7">"No entendí ese</text>
+        <text x="85" y="41" text-anchor="middle" font-size="10.5" fill="currentColor" fill-opacity="0.7">comando…"</text>
+      </g>
+    </svg>
+    <figcaption>
+      <b>Lo que decide el orden:</b> "silencio" y "para" se revisan antes que cualquier otra cosa, siempre.
+      Los interceptores críticos (pantalla negra y brillo) se agregaron esta sesión porque, sin ellos, una
+      pantalla que captura texto sin filtrar (usuario, contraseña, la respuesta de un documento) dejaba a la
+      persona sin forma de decir "pantalla normal" con la voz. Todo lo demás espera a que <code>rawInput</code>
+      esté apagado, para no robarle palabras a una contraseña dictada.
+    </figcaption>
+  </figure>
+</section>
+
+<section aria-labelledby="org-h">
+  <h2 id="org-h">Organización</h2>
+  <p class="claim">Quién construye cada parte, y a quién le toca decidir</p>
+
+  <figure class="scroll">
+    <svg viewBox="0 0 1080 620" role="img"
+         aria-label="Organigrama: Pp coordina y decide. El agente constructor programa el núcleo de la aplicación, el módulo 1 y la integración, y aplica los arreglos seguros que reportan los otros cinco agentes de apoyo (pruebas, documentación, seguridad, optimización, normativa), que escriben cada uno en su propia carpeta dentro de docs/agentes y no tocan el código de la aplicación. Cinco equipos de estudiantes construyen sus propios módulos: IA, cámara y documentos, actividades, y entorno, más Alonso a distancia con la base de datos, las voces y la personalización.">
+      <defs>
+        <marker id="arrow2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse">
+          <path d="M0,0 L10,5 L0,10 z" fill="currentColor" />
+        </marker>
+      </defs>
+
+      <!-- Pp -->
+      <g transform="translate(430,10)">
+        <rect width="220" height="64" rx="10" fill="var(--surface-2)" stroke="currentColor" stroke-opacity="0.6" stroke-width="1.5" />
+        <text x="110" y="26" text-anchor="middle" font-size="13.5" font-weight="800" fill="currentColor">Pp</text>
+        <text x="110" y="44" text-anchor="middle" font-size="10" fill="currentColor" fill-opacity="0.7">decide, prueba en el Oppo,</text>
+        <text x="110" y="57" text-anchor="middle" font-size="10" fill="currentColor" fill-opacity="0.7">responsable legal</text>
+      </g>
+
+      <!-- vertical trunk -->
+      <line x1="540" y1="74" x2="540" y2="110" stroke="currentColor" stroke-opacity="0.4" />
+
+      <!-- Constructor node -->
+      <g transform="translate(30,120)">
+        <rect width="300" height="150" rx="12" fill="#38bdf814" stroke="#38bdf8" stroke-width="1.5" />
+        <text x="150" y="26" text-anchor="middle" font-size="13" font-weight="800" fill="currentColor">Agente constructor</text>
+        <text x="150" y="42" text-anchor="middle" font-size="10" class="mono" fill="currentColor" fill-opacity="0.65">(este agente)</text>
+        <line x1="16" y1="52" x2="284" y2="52" stroke="currentColor" stroke-opacity="0.25" />
+        <text x="150" y="70" text-anchor="middle" font-size="10.5" fill="currentColor" fill-opacity="0.85">Módulo 1, VoiceEngine,</text>
+        <text x="150" y="85" text-anchor="middle" font-size="10.5" fill="currentColor" fill-opacity="0.85">navegación, base de datos</text>
+        <text x="150" y="105" text-anchor="middle" font-size="10.5" fill="currentColor" fill-opacity="0.85">Aplica los arreglos seguros</text>
+        <text x="150" y="120" text-anchor="middle" font-size="10.5" fill="currentColor" fill-opacity="0.85">que reportan los 5 agentes</text>
+        <text x="150" y="138" text-anchor="middle" font-size="9.5" fill="currentColor" fill-opacity="0.55">único que escribe en app/src</text>
+      </g>
+      <line x1="180" y1="120" x2="500" y2="80" stroke="currentColor" stroke-opacity="0.4" marker-end="url(#arrow2)" />
+
+      <!-- Agents lane -->
+      <g transform="translate(370,120)">
+        <rect width="680" height="150" rx="12" fill="#f472b60f" stroke="#f472b6" stroke-width="1.5" />
+        <text x="20" y="24" font-size="12.5" font-weight="800" fill="currentColor">5 agentes de apoyo</text>
+        <text x="20" y="40" font-size="10" fill="currentColor" fill-opacity="0.6">solo escriben en su carpeta · <tspan class="mono">docs/agentes/&lt;nombre&gt;/</tspan> · nunca en app/src</text>
+
+        <!-- five small cards -->
+        <g font-size="10.5">
+          <g transform="translate(16,54)">
+            <rect width="122" height="82" rx="8" fill="var(--surface-2)" stroke="currentColor" stroke-opacity="0.35" />
+            <text x="61" y="20" text-anchor="middle" font-weight="700" fill="currentColor">Pruebas</text>
+            <text x="61" y="38" text-anchor="middle" fill="currentColor" fill-opacity="0.65">rompe y</text>
+            <text x="61" y="52" text-anchor="middle" fill="currentColor" fill-opacity="0.65">mide con</text>
+            <text x="61" y="66" text-anchor="middle" fill="currentColor" fill-opacity="0.65">pruebas</text>
+          </g>
+          <g transform="translate(150,54)">
+            <rect width="122" height="82" rx="8" fill="var(--surface-2)" stroke="currentColor" stroke-opacity="0.35" />
+            <text x="61" y="20" text-anchor="middle" font-weight="700" fill="currentColor">Documentación</text>
+            <text x="61" y="38" text-anchor="middle" fill="currentColor" fill-opacity="0.65">guías y</text>
+            <text x="61" y="52" text-anchor="middle" fill="currentColor" fill-opacity="0.65">páginas</text>
+            <text x="61" y="66" text-anchor="middle" fill="currentColor" fill-opacity="0.65">al día</text>
+          </g>
+          <g transform="translate(284,54)">
+            <rect width="122" height="82" rx="8" fill="var(--surface-2)" stroke="currentColor" stroke-opacity="0.35" />
+            <text x="61" y="20" text-anchor="middle" font-weight="700" fill="currentColor">Seguridad</text>
+            <text x="61" y="38" text-anchor="middle" fill="currentColor" fill-opacity="0.65">busca cómo</text>
+            <text x="61" y="52" text-anchor="middle" fill="currentColor" fill-opacity="0.65">se abusaría</text>
+            <text x="61" y="66" text-anchor="middle" fill="currentColor" fill-opacity="0.65">de la app</text>
+          </g>
+          <g transform="translate(418,54)">
+            <rect width="122" height="82" rx="8" fill="var(--surface-2)" stroke="currentColor" stroke-opacity="0.35" />
+            <text x="61" y="20" text-anchor="middle" font-weight="700" fill="currentColor">Optimización</text>
+            <text x="61" y="38" text-anchor="middle" fill="currentColor" fill-opacity="0.65">peso,</text>
+            <text x="61" y="52" text-anchor="middle" fill="currentColor" fill-opacity="0.65">batería,</text>
+            <text x="61" y="66" text-anchor="middle" fill="currentColor" fill-opacity="0.65">bloqueos</text>
+          </g>
+          <g transform="translate(552,54)">
+            <rect width="112" height="82" rx="8" fill="var(--surface-2)" stroke="currentColor" stroke-opacity="0.35" />
+            <text x="56" y="20" text-anchor="middle" font-weight="700" fill="currentColor">Normativa</text>
+            <text x="56" y="38" text-anchor="middle" fill="currentColor" fill-opacity="0.65">privacidad,</text>
+            <text x="56" y="52" text-anchor="middle" fill="currentColor" fill-opacity="0.65">menores,</text>
+            <text x="56" y="66" text-anchor="middle" fill="currentColor" fill-opacity="0.65">permisos</text>
+          </g>
+        </g>
+      </g>
+      <line x1="710" y1="120" x2="580" y2="80" stroke="currentColor" stroke-opacity="0.4" marker-end="url(#arrow2)" />
+      <line x1="710" y1="270" x2="270" y2="270" stroke="currentColor" stroke-opacity="0.3" stroke-dasharray="3 3" />
+      <text x="490" y="264" text-anchor="middle" font-size="9.5" fill="currentColor" fill-opacity="0.55">informe → el constructor decide qué aplicar</text>
+      <line x1="290" y1="270" x2="290" y2="270" />
+
+      <!-- Teams lane -->
+      <g transform="translate(30,320)">
+        <text x="0" y="0" font-size="12.5" font-weight="800" fill="currentColor">5 equipos de estudiantes</text>
+        <text x="0" y="16" font-size="10" fill="currentColor" fill-opacity="0.6">construyen sus propios módulos; el constructor no los edita sin avisar</text>
+
+        <g font-size="10.5" transform="translate(0,30)">
+          <g transform="translate(0,0)">
+            <rect width="190" height="94" rx="10" fill="#f6c4531a" stroke="var(--team-documentos)" />
+            <text x="95" y="20" text-anchor="middle" font-weight="700" fill="currentColor">Alonso — remoto</text>
+            <text x="95" y="38" text-anchor="middle" fill="currentColor" fill-opacity="0.7">base de datos, voces,</text>
+            <text x="95" y="52" text-anchor="middle" fill="currentColor" fill-opacity="0.7">personalización</text>
+            <text x="95" y="76" text-anchor="middle" font-size="9.5" fill="currentColor" fill-opacity="0.5">todo pasa por Pp</text>
+          </g>
+          <g transform="translate(210,0)">
+            <rect width="190" height="94" rx="10" fill="#60a5fa1a" stroke="var(--team-ia)" />
+            <text x="95" y="20" text-anchor="middle" font-weight="700" fill="currentColor">E2 · Alondra, Owen,</text>
+            <text x="95" y="34" text-anchor="middle" font-weight="700" fill="currentColor">Alejandro</text>
+            <text x="95" y="54" text-anchor="middle" fill="currentColor" fill-opacity="0.7">Módulo 3 — IA</text>
+            <text x="95" y="76" text-anchor="middle" font-size="9.5" fill="currentColor" fill-opacity="0.5">servidor propio</text>
+          </g>
+          <g transform="translate(420,0)">
+            <rect width="190" height="94" rx="10" fill="#4ade801a" stroke="var(--team-camara)" />
+            <text x="95" y="20" text-anchor="middle" font-weight="700" fill="currentColor">E3 · Lalo, Miranda,</text>
+            <text x="95" y="34" text-anchor="middle" font-weight="700" fill="currentColor">Humberto</text>
+            <text x="95" y="54" text-anchor="middle" fill="currentColor" fill-opacity="0.7">Módulos 4 y 5</text>
+            <text x="95" y="76" text-anchor="middle" font-size="9.5" fill="currentColor" fill-opacity="0.5">cámara y documentos</text>
+          </g>
+          <g transform="translate(630,0)">
+            <rect width="190" height="94" rx="10" fill="#b794f61a" stroke="var(--team-actividades)" />
+            <text x="95" y="20" text-anchor="middle" font-weight="700" fill="currentColor">E4 · José, Luis</text>
+            <text x="95" y="54" text-anchor="middle" fill="currentColor" fill-opacity="0.7">Módulo 6 — Actividades</text>
+            <text x="95" y="76" text-anchor="middle" font-size="9.5" fill="currentColor" fill-opacity="0.5">audio y vibración</text>
+          </g>
+          <g transform="translate(0,110)">
+            <rect width="190" height="94" rx="10" fill="#fb923c1a" stroke="var(--team-entorno)" />
+            <text x="95" y="20" text-anchor="middle" font-weight="700" fill="currentColor">E5 · Jesús, Edgar</text>
+            <text x="95" y="54" text-anchor="middle" fill="currentColor" fill-opacity="0.7">Módulo 7 — Entorno</text>
+            <text x="95" y="76" text-anchor="middle" font-size="9.5" fill="currentColor" fill-opacity="0.5">describe lo de enfrente</text>
+          </g>
+        </g>
+      </g>
+      <line x1="180" y1="290" x2="180" y2="320" stroke="currentColor" stroke-opacity="0.3" />
+    </svg>
+    <figcaption>
+      <b>La regla que ordena todo:</b> solo el agente constructor escribe en <code>app/src</code>, y solo aplica
+      lo que los cinco agentes de apoyo reportan como seguro; lo demás queda para que Pp lo decida. Los cinco
+      equipos de estudiantes son dueños de su propio módulo — el constructor los toca solo para integrarlos, y
+      avisa antes de cambiar algo suyo.
+    </figcaption>
+  </figure>
+
+  <div class="legend">
+    <span><span class="swatch" style="background:#38bdf8"></span> núcleo / constructor</span>
+    <span><span class="swatch" style="background:#f472b6"></span> agentes de apoyo</span>
+    <span><span class="swatch" style="background:#60a5fa"></span> IA</span>
+    <span><span class="swatch" style="background:#4ade80"></span> cámara</span>
+    <span><span class="swatch" style="background:#f6c453"></span> documentos / Alonso</span>
+    <span><span class="swatch" style="background:#b794f6"></span> actividades</span>
+    <span><span class="swatch" style="background:#fb923c"></span> entorno</span>
+  </div>
+
+  <div class="callout">
+    <b>Qué le toca al agente constructor, en concreto:</b> el código de <code>app/src/main</code> del núcleo
+    (Módulo 1, voz, navegación, base de datos), integrar lo que suben los equipos, aplicar los arreglos que los
+    cinco agentes marcan como seguros y sin decisión pendiente, compilar y entregar el APK para probar en el
+    Oppo. No decide precios de plataforma, edades, ni qué proveedor de IA usar — eso es de Pp, con el informe
+    del agente de normativa sobre la mesa.
+  </div>
+</section>
+
+<footer class="page">
+  Generado por el agente constructor a partir del código y de los informes de los cinco agentes de apoyo, el 29 de septiembre de 2026.
+  Los nombres de clases y funciones citados existen en el commit indicado arriba; si el código cambia, esta página puede quedar desactualizada.
+</footer>

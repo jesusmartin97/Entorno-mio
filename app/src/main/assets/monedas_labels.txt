@@ -1,0 +1,6 @@
+10pesos
+1peso
+20pesos
+2pesos
+5pesos
+sin_moneda

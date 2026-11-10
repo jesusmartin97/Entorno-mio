@@ -1,0 +1,245 @@
+ 
+a la derecha
+a la izquierda
+abre el ultimo
+acelera
+activ*
+activa
+activar
+adelante
+almacenamiento
+alrededor
+analiza
+anterior
+apaga
+archivos temporales
+atras
+aviso
+bateria
+borra
+borra el actual
+borra el chat
+borra este
+borra las fotos
+borra mi cuenta
+borra mis datos
+borra todos
+borrar
+borrar este
+borrar las fotos
+borrar mi cuenta
+borrar mis datos
+borrar todos
+cache
+cambia a sonidos
+cambia a vibracion
+cambia de voz
+cambia la voz
+cambiar a sonidos
+cambiar a vibracion
+cambiar la voz
+captura
+cerrar sesion
+cierra mi sesion
+cierra sesion
+cobertura
+comando anterior
+como esta mi celular
+como esta mi telefono
+conexion
+continua
+continuar
+cuanta carga
+cuanto espacio
+cuanto ocupa
+cuantos
+dar acceso
+darme de baja
+datos moviles
+de nuevo
+de tu
+desactiv*
+descri*
+describe
+descripcion
+desde el principio
+despacio
+di algo
+dia de hoy
+dia es
+dijiste
+dilo
+documento
+documentos
+ejercicios de sonidos
+ejercicios de vibracion
+el que sigue
+el ultimo
+elimina
+elimina este
+elimina mi cuenta
+elimina mis datos
+elimina todos
+eliminar este
+eliminar mi cuenta
+eliminar mis datos
+eliminar todos
+empezar un chat
+empieza
+enciende
+enfrente
+entorno
+escanea
+escuchalo
+escuchate
+espacio libre
+estado de la pantalla
+estado del celular
+estado del dispositivo
+estado del telefono
+fecha
+foto
+fotografia
+fuera de la aplicacion
+fuera de la app
+fuerte
+habilitar
+habla mas lento
+habla mas rapido
+hacia el lado derecho
+hacia el lado izquierdo
+hacia la derecha
+hacia la izquierda
+inicio
+inteligencia artificial
+internet
+la ia
+la ultima
+lee
+lee el texto
+lee el ultimo
+lee este
+lee esto
+leelo
+leeme
+leer
+leer documento
+leer texto
+letra
+libera
+libera espacio
+libera memoria
+liberar
+liberar espacio
+limpia
+limpia el espacio
+limpiar
+limpiar espacio
+lo mismo
+mas agudo
+mas antiguo
+mas despacio
+mas grave
+mas lento
+mas nuevo
+mas rapido
+mas reciente
+mas veloz
+maximo volumen
+memoria temporal
+menu
+minimo volumen
+modo simple
+modo sonidos
+modo vibracion
+modulos
+no
+no alcance a oir
+no escuche
+no quiero
+normal
+nueva
+nueva conversacion
+nueva foto
+nuevo chat
+nuevo documento
+opciones
+otra foto
+otra vez
+otra voz
+otro
+otro documento
+otro ejercicio
+otro papel
+pantalla anterior
+papel
+parrafo anterior
+pasa a sonidos
+pasa a vibracion
+pasa al siguiente
+pausa
+pausar
+permiso
+pila
+pon
+ponlo otra vez
+prende
+probar voz
+proximo
+prueba de voz
+prueba la voz
+que dia
+que dices
+que hay
+que ves
+quiero
+quita
+reanuda
+regresa
+regresar
+repetir
+repite
+repiteme
+respuesta
+saca
+salir
+salir de la cuenta
+se fue a la derecha
+se fue a la izquierda
+segundo plano
+senal
+si
+sigue
+siguiente
+siguiente voz
+sin
+solicitud anterior
+sonido
+suave
+temporales
+termina
+terminar
+texto
+toma
+tutea
+ultima
+usted
+va a la derecha
+va a la izquierda
+vacia
+vaciar
+vibracion
+volumen al maximo
+volumen al minimo
+volumen maximo
+volumen minimo
+volver
+voz aguda
+voz anterior
+voz grave
+vuelve
+vuelve a poner
+vuelve a sonar
+wi fi
+wifi
+ya no quiero

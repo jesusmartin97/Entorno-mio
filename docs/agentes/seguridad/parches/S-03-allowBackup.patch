@@ -1,0 +1,28 @@
+# Parche S-03 — allowBackup (NO APLICADO)
+#
+# Motivo: con allowBackup="true" y sin dataExtractionRules/fullBackupContent,
+# la base cecapi.db (hashes de contraseña, historial) y las fotos privadas de
+# filesDir salen en las copias de seguridad de Android (adb backup y nube).
+# Es la vía de fuga de datos más directa hoy. Este es el arreglo mínimo de una
+# línea: desactivar el respaldo.
+#
+# Alternativa (si se quiere conservar el respaldo excluyendo lo sensible):
+# mantener allowBackup="true" y añadir android:dataExtractionRules y
+# android:fullBackupContent apuntando a reglas que excluyan la base de datos y
+# la carpeta de fotos. Esa opción es más larga y se deja para que la decida Pp.
+#
+# Cómo aplicarlo (lo hace el agente constructor, NO el Agente 3):
+#   git apply docs/agentes/seguridad/parches/S-03-allowBackup.patch
+# Verificado contra el commit 8019dd1 (AndroidManifest.xml sin cambios hasta 98eb671).
+
+--- a/app/src/main/AndroidManifest.xml
++++ b/app/src/main/AndroidManifest.xml
+@@ -20,7 +20,7 @@
+
+     <application
+         android:name=".CecapiApplication"
+-        android:allowBackup="true"
++        android:allowBackup="false"
+         android:icon="@mipmap/ic_launcher"
+         android:label="@string/app_name"
+         android:supportsRtl="true"

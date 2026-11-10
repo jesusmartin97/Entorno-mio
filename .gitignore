@@ -1,0 +1,32 @@
+# Gradle
+.gradle/
+.kotlin/
+build/
+!gradle/wrapper/gradle-wrapper.jar
+
+# Android Studio / local config
+local.properties
+.idea/
+*.iml
+.DS_Store
+captures/
+.externalNativeBuild/
+.cxx/
+
+# Distribución (el APK pesa más de 100 MB y GitHub no lo acepta)
+dist/
+*.apk
+
+# Logs
+*.log
+ 
+# Backend 
+.env 
+entorno_virtual/ 
+__pycache__/ 
+*.pyc 
+backend/uso_diario.json
+backend/uso_diario.tmp
+
+# Claude Code local state (worktrees, etc.)
+.claude/

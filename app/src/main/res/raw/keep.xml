@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Actividades loads its sounds by name (getIdentifier), so the resource shrinker thinks they are unused and would
+     delete them from a release build, leaving the exercises silent. Keep every raw resource. -->
+<resources xmlns:tools="http://schemas.android.com/tools" tools:keep="@raw/*" />
