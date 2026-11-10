@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Base theme only used for the launch splash / manifest declaration.
+         All real UI theming happens in Compose (core/theme/Theme.kt) so it can
+         react to voice-first state instead of being fixed at the XML level. -->
+    <style name="Theme.Cecapi" parent="android:Theme.Material.NoActionBar">
+        <item name="android:windowBackground">@color/cecapi_background</item>
+        <item name="android:statusBarColor">@color/cecapi_background</item>
+        <item name="android:navigationBarColor">@color/cecapi_background</item>
+    </style>
+</resources>

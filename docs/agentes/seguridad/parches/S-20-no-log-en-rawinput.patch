@@ -1,0 +1,26 @@
+# Parche S-20 — no registrar el habla cuando rawInput está activo (NO APLICADO, PROPUESTA)
+#
+# Motivo: durante los pasos con rawInput=true (contraseña de login y contraseña
+# para borrar cuenta), el texto reconocido —la contraseña— se emite igual en
+# recognizedSpeech. Si VoiceAssistantViewModel está vivo, logInteraction lo
+# guardaría en texto plano en la tabla comandos_voz. Esta salvaguarda mínima
+# hace que ese ViewModel no registre nada mientras se está dictando una
+# contraseña. Es un arreglo defensivo; el arreglo de raíz es no emitir la
+# contraseña en el flujo compartido (ver informe, S-18/S-20).
+#
+# OJO: este archivo es del Módulo 2 (otro equipo). El Agente 3 NO lo aplica.
+# Lo decide el dueño del módulo o el agente constructor.
+#
+# Verificado contra el commit d5ffd5e con `git apply --check`.
+
+--- a/app/src/main/java/com/cecapi/app/feature/modulo2_asistentevoz/VoiceAssistantViewModel.kt
++++ b/app/src/main/java/com/cecapi/app/feature/modulo2_asistentevoz/VoiceAssistantViewModel.kt
+@@ -43,6 +43,8 @@ class VoiceAssistantViewModel @Inject constructor(
+         viewModelScope.launch {
+             voiceEngine.recognizedSpeech.collect { speech ->
+                 val usuario = sessionRepository.currentUser.value ?: return@collect
++                // Nunca registrar lo dictado mientras se espera una contraseña (S-18/S-20).
++                if (voiceEngine.rawInput) return@collect
+                 val text = speech.text.lowercase()
+                 val match = ModuloCecapi.entries.firstOrNull { modulo ->
+                     text.contains(modulo.title.lowercase()) || text.contains(modulo.subtitle.lowercase())

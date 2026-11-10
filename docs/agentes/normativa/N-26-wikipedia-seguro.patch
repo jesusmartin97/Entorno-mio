@@ -1,0 +1,184 @@
+diff --git a/b/app/src/main/java/com/cecapi/app/core/util/SensitiveTopics.kt b/app/src/main/java/com/cecapi/app/core/util/SensitiveTopics.kt
+new file mode 100644
+index 0000000..96c2ddf
+--- /dev/null
++++ b/app/src/main/java/com/cecapi/app/core/util/SensitiveTopics.kt
+@@ -0,0 +1,56 @@
++package com.cecapi.app.core.util
++
++import com.cecapi.app.core.voice.VoiceText
++
++/**
++ * What must never go to an encyclopedia search, for a person of any age (the app does not know yet who is
++ * using it, so it assumes it may be a child). Three checks, all on the words the person said:
++ * - a crisis (harm to oneself, violence, abuse, an emergency) gets a fixed answer with help lines, never a search;
++ * - adult or violent topics are not searched, because Wikipedia has no filter for children;
++ * - something that looks like the person's own data ("mi domicilio", a number) is not sent to the internet.
++ * Word lists are a floor, not a guarantee: they miss things and are meant to be reviewed with care.
++ */
++object SensitiveTopics {
++
++    /** Read aloud instead of any search. Help lines verified on gob.mx (CONASAMA) on 2026-09-28. */
++    const val CRISIS_REPLY =
++        "Lo que me dices es importante. Si estás en peligro, llama al 9 1 1. " +
++            "Si te sientes muy mal o piensas en hacerte daño, llama a la Línea de la Vida: 800 911 2000. " +
++            "Es gratis y contestan a toda hora. Si puedes, busca también a una persona de confianza que esté cerca."
++
++    const val BLOCKED_REPLY = "De ese tema no busco información. Si lo necesitas, pregúntale a una persona de confianza."
++
++    const val PRIVATE_REPLY = "Eso parece un dato tuyo o de otra persona. No lo busco en internet."
++
++    fun isCrisis(text: String): Boolean {
++        val spoken = " ${VoiceText.normalize(text)} "
++        return CRISIS_PHRASES.any { spoken.contains(" $it ") } || words(text).any { word -> CRISIS_STEMS.any { stem -> word.startsWith(stem) } }
++    }
++
++    /** True for [query] or for the article [title] found for it, so a harmless question cannot land on one. */
++    fun isBlocked(query: String, title: String? = null): Boolean =
++        listOfNotNull(query, title).any { text -> words(text).any { word -> word in BLOCKED_WORDS || BLOCKED_STEMS.any { stem -> word.startsWith(stem) } } }
++
++    fun looksPrivate(query: String): Boolean =
++        query.any { it.isDigit() } || words(query).any { it in PRIVATE_WORDS }
++
++    private fun words(text: String) = VoiceText.normalize(text).split(" ").filter { it.isNotEmpty() }
++
++    private val CRISIS_PHRASES = listOf(
++        "me quiero morir", "quiero morirme", "quiero morir", "no quiero vivir", "ya no quiero vivir",
++        "quitarme la vida", "hacerme dano", "matarme", "me voy a matar", "me quiero matar",
++        "me pegan", "me estan pegando", "me lastiman", "me estan lastimando", "abusan de mi", "me tocan",
++        "me quieren hacer dano", "tengo miedo de mi", "auxilio", "estoy en peligro",
++    )
++    private val CRISIS_STEMS = listOf("suicid", "autolesion")
++
++    private val BLOCKED_WORDS = setOf(
++        "sexo", "sexual", "sexuales", "coito", "orgasmo", "desnudo", "desnuda", "desnudos", "violacion", "violar",
++        "droga", "drogas", "cocaina", "marihuana", "heroina", "metanfetamina", "fentanilo", "lsd", "extasis",
++        "matar", "tortura", "masacre", "genocidio", "decapitacion", "arma", "armas", "pistola", "rifle",
++        "bomba", "bombas", "explosivo", "explosivos", "veneno", "venenos", "ahorcamiento",
++    )
++    private val BLOCKED_STEMS = listOf("porno", "erotic", "prostitu", "asesin", "terroris", "suicid", "pedofil", "incest")
++
++    private val PRIVATE_WORDS = setOf("mi", "mis", "mio", "mia", "domicilio", "direccion", "telefono", "curp", "rfc", "contrasena")
++}
+diff --git a/app/src/main/java/com/cecapi/app/feature/modulo1_aplicacionprincipal/DashboardViewModel.kt b/app/src/main/java/com/cecapi/app/feature/modulo1_aplicacionprincipal/DashboardViewModel.kt
+index 8400649..bcdf656 100644
+--- a/app/src/main/java/com/cecapi/app/feature/modulo1_aplicacionprincipal/DashboardViewModel.kt
++++ b/app/src/main/java/com/cecapi/app/feature/modulo1_aplicacionprincipal/DashboardViewModel.kt
+@@ -7,6 +7,7 @@ import com.cecapi.app.core.ui.MenuItem
+ import com.cecapi.app.core.navigation.CecapiDestinations
+ import com.cecapi.app.core.util.ConnectivityObserver
+ import com.cecapi.app.core.util.PhoneStatusReader
++import com.cecapi.app.core.util.SensitiveTopics
+ import com.cecapi.app.core.util.VolumeControl
+ import com.cecapi.app.core.util.WikipediaLookup
+ import com.cecapi.app.core.voice.AssistantPreferences
+@@ -224,6 +225,8 @@ class DashboardViewModel @Inject constructor(
+     private fun notUnderstood(text: String, allowFallback: Boolean) {
+         val wikiQuery = wikiQuery(text)
+         when {
++            // A person in crisis gets help lines at once, never a search result or "no entendí".
++            SensitiveTopics.isCrisis(text) -> voiceEngine.speak(SensitiveTopics.CRISIS_REPLY, listenAfter = true)
+             allowFallback && intentFallback.resolver != null && isOnline.value -> askAi(text, deep = false)
+             // The AI is off (its providers do not allow minors) or not connected yet: Wikipedia still helps
+             // with a plain "qué es / quién fue / busca..." when there is internet, without needing an account.
+@@ -242,15 +245,26 @@ class DashboardViewModel @Inject constructor(
+     private var pendingWikiRest: String? = null
+ 
+     private fun askWikipedia(query: String) {
+-        voiceEngine.speak("Buscando en Wikipedia.")
++        // Wikipedia has no filter for children and anyone may be using the app, so some things are never sent.
++        if (SensitiveTopics.looksPrivate(query)) {
++            voiceEngine.speak(SensitiveTopics.PRIVATE_REPLY, listenAfter = true)
++            return
++        }
++        if (SensitiveTopics.isBlocked(query)) {
++            voiceEngine.speak(SensitiveTopics.BLOCKED_REPLY, listenAfter = true)
++            return
++        }
++        voiceEngine.speak("Buscando en Wikipedia, por internet.")
+         viewModelScope.launch {
+             val result = runCatching { wikipediaLookup.search(query) }.getOrNull()
+-            if (result == null) {
++            if (result != null && SensitiveTopics.isBlocked(query, result.title)) {
++                voiceEngine.speak(SensitiveTopics.BLOCKED_REPLY, listenAfter = true)
++            } else if (result == null) {
+                 voiceEngine.speak("No encontré nada en Wikipedia sobre eso.")
+             } else {
+                 pendingWikiRest = result.rest
+                 voiceEngine.speak(
+-                    result.short + if (result.rest != null) " Si quieres saber más, di dime más." else "",
++                    "Según Wikipedia: " + result.short + if (result.rest != null) " Si quieres saber más, di dime más." else "",
+                     listenAfter = true,
+                 )
+             }
+@@ -391,7 +405,8 @@ class DashboardViewModel @Inject constructor(
+         // Matched against VoiceText.fold(text) — accents stripped, same length as the original — so the
+         // captured group's range lines up with the words the person actually said, accents and all.
+         val WIKI_TRIGGER = Regex(
+-            "(?:busca(?:r)? en wikipedia|busca(?:r)?|informacion sobre|dime sobre|" +
++            // Only at the start of the phrase: "no sé qué es lo que me pasa" is not a question for an encyclopedia.
++            "^\s*(?:busca(?:r)? en wikipedia|busca(?:r)?|informacion sobre|dime sobre|" +
+                 "que es|quien es|quien fue|wikipedia)\\s+(.+)",
+         )
+     }
+diff --git a/app/src/main/java/com/cecapi/app/feature/modulo1_aplicacionprincipal/HomeViewModel.kt b/app/src/main/java/com/cecapi/app/feature/modulo1_aplicacionprincipal/HomeViewModel.kt
+index 4b02bf7..544eec4 100644
+--- a/app/src/main/java/com/cecapi/app/feature/modulo1_aplicacionprincipal/HomeViewModel.kt
++++ b/app/src/main/java/com/cecapi/app/feature/modulo1_aplicacionprincipal/HomeViewModel.kt
+@@ -7,6 +7,7 @@ import com.cecapi.app.core.navigation.CecapiDestinations
+ import com.cecapi.app.core.ui.MenuItem
+ import com.cecapi.app.core.util.ConnectivityObserver
+ import com.cecapi.app.core.util.PhoneStatusReader
++import com.cecapi.app.core.util.SensitiveTopics
+ import com.cecapi.app.core.util.VolumeControl
+ import com.cecapi.app.core.util.WikipediaLookup
+ import com.cecapi.app.core.voice.VoiceMessages
+@@ -289,6 +290,8 @@ class HomeViewModel @Inject constructor(
+     private fun notUnderstood(text: String, allowFallback: Boolean) {
+         val wikiQuery = wikiQuery(text)
+         when {
++            // A person in crisis gets help lines at once, never a search result or "no entendí".
++            SensitiveTopics.isCrisis(text) -> voiceEngine.speak(SensitiveTopics.CRISIS_REPLY, listenAfter = true)
+             allowFallback && intentFallback.resolver != null && isOnline.value -> askAi(text, deep = false)
+             // The AI is off (its providers do not allow minors) or not connected yet: Wikipedia still helps
+             // with a plain "qué es / quién fue / busca..." when there is internet, without needing an account.
+@@ -307,15 +310,26 @@ class HomeViewModel @Inject constructor(
+     private var pendingWikiRest: String? = null
+ 
+     private fun askWikipedia(query: String) {
+-        voiceEngine.speak("Buscando en Wikipedia.")
++        // Wikipedia has no filter for children and anyone may be using the app, so some things are never sent.
++        if (SensitiveTopics.looksPrivate(query)) {
++            voiceEngine.speak(SensitiveTopics.PRIVATE_REPLY, listenAfter = true)
++            return
++        }
++        if (SensitiveTopics.isBlocked(query)) {
++            voiceEngine.speak(SensitiveTopics.BLOCKED_REPLY, listenAfter = true)
++            return
++        }
++        voiceEngine.speak("Buscando en Wikipedia, por internet.")
+         viewModelScope.launch {
+             val result = runCatching { wikipediaLookup.search(query) }.getOrNull()
+-            if (result == null) {
++            if (result != null && SensitiveTopics.isBlocked(query, result.title)) {
++                voiceEngine.speak(SensitiveTopics.BLOCKED_REPLY, listenAfter = true)
++            } else if (result == null) {
+                 voiceEngine.speak("No encontré nada en Wikipedia sobre eso.")
+             } else {
+                 pendingWikiRest = result.rest
+                 voiceEngine.speak(
+-                    result.short + if (result.rest != null) " Si quieres saber más, di dime más." else "",
++                    "Según Wikipedia: " + result.short + if (result.rest != null) " Si quieres saber más, di dime más." else "",
+                     listenAfter = true,
+                 )
+             }
+@@ -385,7 +399,8 @@ class HomeViewModel @Inject constructor(
+         // Matched against VoiceText.fold(text) — accents stripped, same length as the original — so the
+         // captured group's range lines up with the words the person actually said, accents and all.
+         val WIKI_TRIGGER = Regex(
+-            "(?:busca(?:r)? en wikipedia|busca(?:r)?|informacion sobre|dime sobre|" +
++            // Only at the start of the phrase: "no sé qué es lo que me pasa" is not a question for an encyclopedia.
++            "^\s*(?:busca(?:r)? en wikipedia|busca(?:r)?|informacion sobre|dime sobre|" +
+                 "que es|quien es|quien fue|wikipedia)\\s+(.+)",
+         )
+ 

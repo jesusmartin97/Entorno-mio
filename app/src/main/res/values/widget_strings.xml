@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="widget_label">Asistente CECAPI</string>
+    <string name="widget_description">Habla con el asistente sin abrir la aplicación, escucha el estado del teléfono y tus notificaciones.</string>
+    <string name="widget_talk">Hablar</string>
+    <string name="widget_talk_description">Hablar con el asistente. Toca dos veces para abrirlo y que te escuche.</string>
+    <string name="widget_status">Estado</string>
+    <string name="widget_notifications">Avisos</string>
+    <string name="widget_notifications_description">Notificaciones. Toca dos veces para escuchar cuántas tienes y de qué aplicaciones.</string>
+    <string name="widget_status_description">Estado del teléfono. Toca dos veces para escuchar la hora, la batería y la conexión.</string>
+</resources>

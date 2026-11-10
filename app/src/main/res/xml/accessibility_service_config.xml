@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Configuración del servicio de accesibilidad de CECAPI (entregable 1 de Equipo 5).
+
+    No pide exploración táctil: los gestos de un dedo (deslizar izquierda, derecha, arriba y abajo)
+    se quedan como los de Android. El servicio filtra las teclas de volumen para el doble volumen
+    abajo, toma una captura temporal en memoria y lee su texto con OCR. La captura no se guarda.
+-->
+<accessibility-service xmlns:android="http://schemas.android.com/apk/res/android"
+    android:accessibilityEventTypes="typeWindowStateChanged|typeWindowContentChanged|typeViewFocused|typeViewClicked"
+    android:accessibilityFeedbackType="feedbackSpoken"
+    android:accessibilityFlags="flagDefault|flagRetrieveInteractiveWindows|flagRequestFilterKeyEvents"
+    android:canPerformGestures="true"
+    android:canRequestFilterKeyEvents="true"
+    android:canRequestTouchExplorationMode="false"
+    android:canRetrieveWindowContent="true"
+    android:canTakeScreenshot="true"
+    android:description="@string/accessibility_service_description"
+    android:notificationTimeout="100" />
